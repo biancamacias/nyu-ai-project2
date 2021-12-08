@@ -2,8 +2,36 @@
 # Isabel Huey, Bianca Macias
 # ijh234, bm2815
 
+# Takes in the number of variables,
+# the variable_names, the domain_values, the constraint_array, and the current assignments.
+# Will return a list of the variable_names with the smallest amount of remaining values
+# gonna have remaining_values be a list of lists so it is easy to index and remove values
+def minimum_remaining_values(num_variables, variable_names, domain_values, constraint_array, assignment):
+    # if the assignment is empty then return all of the variable names
+    if assignment == {}:
+        return variable_names
 
-# def minimum_remaining_values():
+    # Make a list of lists of the domain_values
+    # Have to remake this each time we calculate minimum_remaining_values in case an assignment has been removed
+    remaining_values = []
+    for num in range(num_variables):
+        remaining_values.append(domain_values)
+
+    # edit the lsit of remaining values according to the assignments and the constraints
+    for key in assignment:
+        row = variable_name.index(key)
+        constraint_row = constraint_array[row]
+        index_count = 0
+        for value in constraint_row:
+            if value = 1:
+                theVar = variable_names[index_count]
+
+
+
+
+
+    # if
+
 # def degree_heuristic():
 # def order_domain_values(num_variables, num_domain_values, variable_names, domain_values, constraint_array, var, assignment):
 # def inference(num_variables, num_domain_values, variable_names, domain_values, constraint_array, var, assignment):
@@ -11,7 +39,7 @@ def select_unassigned_variable(num_variables, num_domain_values, variable_names,
     return None
 
 #returns a solution or failure
-def backtrack(num_variables, num_domain_values, variable_names, domain_values, constraint_array, assignment):
+def backtrack(num_variables, num_domain_values, variable_names, domain_values, constraint_array, remaining_values, assignment):
     assigned variables = []
     unassigned_variables = []
     for name in variable_names:
