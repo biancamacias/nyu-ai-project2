@@ -118,6 +118,7 @@ def backtrack(prev_d_value, num_variables, num_domain_values, variable_names, do
     assigned_variables = []
     unassigned_variables = []
     succeed = True
+    #Base Case
     for name in variable_names:
         if name in assignments:
             assigned_variables.append(name)
@@ -126,9 +127,10 @@ def backtrack(prev_d_value, num_variables, num_domain_values, variable_names, do
     if unassigned_variables == []:
         return assignments
 
+
     (variable, possible_values) = select_unassigned_variable(prev_d_value, num_variables, num_domain_values, variable_names, domain_values, constraint_array, assignments)
     if (variable == None) | (possible_values == None):
-        return False
+        return None
     for value in possible_values:
         assignments[variable] = value
         result = backtrack(value, num_variables, num_domain_values, variable_names, domain_values, constraint_array, assignments)
