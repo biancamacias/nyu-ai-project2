@@ -140,9 +140,9 @@ def backtrack(prev_d_value, num_variables, num_domain_values, variable_names, do
     return None
 
 # Print the assignements in the proper format
-def output(assignments):
-    # Print the output correctly
-    return None
+def output(variable_names, assignments):
+    for key in variable_names:
+        print(key + "=" + assignments[key])
 
 def main():
     # Ask for input to obtain filename and try to open the file
@@ -173,10 +173,7 @@ def main():
 
 
     goal_state = backtrack(None,num_variables, num_domain_values, variable_names, domain_values, constraint_array, {})
-    #output(goal_state)
-    print(goal_state)
-
-
+    output(variable_names, goal_state)
 
 if __name__ == '__main__':
     main()
