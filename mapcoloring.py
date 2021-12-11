@@ -72,12 +72,14 @@ def degree_heuristic(prev_d_value, remaining_values, min_rem_values, variable_na
                 curr_degree_heursitic += 1
         degree_heuristics.append(curr_degree_heursitic)
 
-    curr_highest_value = 0
+
+    # should fix if works to get rif of repetitiveness of cheking the same value twice
+    curr_highest_value = degree_heuristics[0]
     if min_rem_values == []:
         return None
     highest_degree_heuristic = min_rem_values[0]
-    for value in degree_heuristics:
-        if value > curr_highest_value:
+    for value in degree_heuristics[1:]:
+        if value < curr_highest_value:
             curr_highest_value = value
             index = degree_heuristics.index(value)
             highest_degree_heuristic = min_rem_values[index]
@@ -90,13 +92,6 @@ def degree_heuristic(prev_d_value, remaining_values, min_rem_values, variable_na
 # I am unsure if it only does forward checking or if it should be used even without the otpional forward checking
 def inference(num_variables, num_domain_values, variable_names, domain_values, constraint_array, var, assignment):
     return None
-
-# I am unsure if we actually need this function or not his instructions about it are confusing.
-# Currently I am just returning the possible domain values as a list in the selected_unassigned_variable function
-# If we do need this function it will be called after the select_unassigned_variable function in the backtrack fucntion
-def order_domain_values(num_variables, num_domain_values, variable_names, domain_values, constraint_array, var, assignment):
-    return None
-
 
 # Call the minimin_remaining_values function in order to get the remaining domain values of each variable and to get a list of
 # the variables with the minimum_remaining_values. Use these found values in the degree_heuristic call and select the variable
@@ -140,9 +135,9 @@ def backtrack(prev_d_value, num_variables, num_domain_values, variable_names, do
     return None
 
 # Print the assignements in the proper format
-def output(assignments):
-    # Print the output correctly
-    return None
+def output(variable_names, assignments):
+    for key in variable_names:
+        print(key + "=" + assignments[key])
 
 def main():
     # Ask for input to obtain filename and try to open the file
@@ -173,10 +168,7 @@ def main():
 
 
     goal_state = backtrack(None,num_variables, num_domain_values, variable_names, domain_values, constraint_array, {})
-    #output(goal_state)
-    print(goal_state)
-
-
+    output(variable_names, goal_state)
 
 if __name__ == '__main__':
     main()
