@@ -72,12 +72,14 @@ def degree_heuristic(prev_d_value, remaining_values, min_rem_values, variable_na
                 curr_degree_heursitic += 1
         degree_heuristics.append(curr_degree_heursitic)
 
-    curr_highest_value = 0
+
+    # should fix if works to get rif of repetitiveness of cheking the same value twice
+    curr_highest_value = degree_heuristics[0]
     if min_rem_values == []:
         return None
     highest_degree_heuristic = min_rem_values[0]
-    for value in degree_heuristics:
-        if value > curr_highest_value:
+    for value in degree_heuristics[1:]:
+        if value < curr_highest_value:
             curr_highest_value = value
             index = degree_heuristics.index(value)
             highest_degree_heuristic = min_rem_values[index]
