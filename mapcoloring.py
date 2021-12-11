@@ -91,13 +91,6 @@ def degree_heuristic(prev_d_value, remaining_values, min_rem_values, variable_na
 def inference(num_variables, num_domain_values, variable_names, domain_values, constraint_array, var, assignment):
     return None
 
-# I am unsure if we actually need this function or not his instructions about it are confusing.
-# Currently I am just returning the possible domain values as a list in the selected_unassigned_variable function
-# If we do need this function it will be called after the select_unassigned_variable function in the backtrack fucntion
-def order_domain_values(num_variables, num_domain_values, variable_names, domain_values, constraint_array, var, assignment):
-    return None
-
-
 # Call the minimin_remaining_values function in order to get the remaining domain values of each variable and to get a list of
 # the variables with the minimum_remaining_values. Use these found values in the degree_heuristic call and select the variable
 # to assign next. Get the index of this variable from the variable_names list and use the index to index the list of
