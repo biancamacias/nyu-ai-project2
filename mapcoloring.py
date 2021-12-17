@@ -7,7 +7,8 @@ import copy
 # the variable_names, the domain_values, the constraint_array, and the current assignments.
 # Will return a list of the variable_names with the smallest amount of remaining values
 # gonna have remaining_values be a list of lists so it is easy to index and remove values
-def minimum_remaining_values(prev_d_value, remaining_values, num_variables, variable_names, domain_values, constraint_array, assignments):
+def minimum_remaining_values(prev_d_value, remaining_values, num_variables, \
+    variable_names, domain_values, constraint_array, assignments):
     # Reset Remaining Values
     # Make a list of lists of the domain_values
     # Have to remake this each time we calculate minimum_remaining_values in case an assignment has been removed
@@ -28,7 +29,7 @@ def minimum_remaining_values(prev_d_value, remaining_values, num_variables, vari
         constraint_row = constraint_array[row]
         if key in assignments:
             remaining_values[row] = []
-        counter =0
+        counter = 0
         for value in constraint_row:
             if value == '1':
                 if d_value in remaining_values[counter]:
@@ -54,7 +55,8 @@ def minimum_remaining_values(prev_d_value, remaining_values, num_variables, vari
         index += 1
     return (remaining_values, min_rem_values)
 
-def degree_heuristic(prev_d_value, remaining_values, min_rem_values, variable_names, constraint_array, assignments):
+def degree_heuristic(prev_d_value, remaining_values, min_rem_values, \
+    variable_names, constraint_array, assignments):
     # Does the degree heursitic still count the adjacent regions that
     # are not being affected because another region alreay took a color choice from them?
     list_of_indexes = []
@@ -87,20 +89,21 @@ def degree_heuristic(prev_d_value, remaining_values, min_rem_values, variable_na
 
 
 
-# Implementing this one with forward checking is optional, but I think we should try it after we get evrything select_unassigned_variable
-# to work.
-# I am unsure if it only does forward checking or if it should be used even without the otpional forward checking
-def inference(num_variables, num_domain_values, variable_names, domain_values, constraint_array, var, assignment):
+def inference(num_variables, num_domain_values, variable_names, domain_values, \
+    constraint_array, var, assignment):
     return None
 
 # Call the minimin_remaining_values function in order to get the remaining domain values of each variable and to get a list of
 # the variables with the minimum_remaining_values. Use these found values in the degree_heuristic call and select the variable
 # to assign next. Get the index of this variable from the variable_names list and use the index to index the list of
 # remaining values in order to retreive the remaining values for this variable.
-def select_unassigned_variable(prev_d_value, num_variables, num_domain_values, variable_names, domain_values, constraint_array, assignments):
-    (remaining_values, min_rem_values) = minimum_remaining_values(prev_d_value, [], num_variables, variable_names, domain_values, constraint_array, assignments)
+def select_unassigned_variable(prev_d_value, num_variables, num_domain_values, \
+    variable_names, domain_values, constraint_array, assignments):
+    (remaining_values, min_rem_values) = minimum_remaining_values(prev_d_value, \
+     [], num_variables, variable_names, domain_values, constraint_array, assignments)
     #print(remaining_values, min_rem_values)
-    selected_variable = degree_heuristic(prev_d_value, remaining_values, min_rem_values, variable_names, constraint_array, assignments)
+    selected_variable = degree_heuristic(prev_d_value, remaining_values, \
+        min_rem_values, variable_names, constraint_array, assignments)
     if selected_variable != None:
         index = variable_names.index(selected_variable)
         possible_values = remaining_values[index]
@@ -109,7 +112,8 @@ def select_unassigned_variable(prev_d_value, num_variables, num_domain_values, v
     return (selected_variable, possible_values)
 
 #returns a solution or failure
-def backtrack(prev_d_value, num_variables, num_domain_values, variable_names, domain_values, constraint_array, assignments):
+def backtrack(prev_d_value, num_variables, num_domain_values, variable_names, \
+    domain_values, constraint_array, assignments):
     assigned_variables = []
     unassigned_variables = []
     succeed = True
@@ -123,12 +127,15 @@ def backtrack(prev_d_value, num_variables, num_domain_values, variable_names, do
         return assignments
 
 
-    (variable, possible_values) = select_unassigned_variable(prev_d_value, num_variables, num_domain_values, variable_names, domain_values, constraint_array, assignments)
+    (variable, possible_values) = select_unassigned_variable(prev_d_value, \
+        num_variables, num_domain_values, variable_names, domain_values, \
+        constraint_array, assignments)
     if (variable == None) | (possible_values == None):
         return None
     for value in possible_values:
         assignments[variable] = value
-        result = backtrack(value, num_variables, num_domain_values, variable_names, domain_values, constraint_array, assignments)
+        result = backtrack(value, num_variables, num_domain_values, \
+            variable_names, domain_values, constraint_array, assignments)
         if result != None:
             return assignments
         del assignments[variable]
