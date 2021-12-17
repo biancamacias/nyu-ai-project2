@@ -74,7 +74,6 @@ def degree_heuristic(prev_d_value, remaining_values, min_rem_values, \
                 curr_degree_heursitic += 1
         degree_heuristics.append(curr_degree_heursitic)
 
-
     # should fix if works to get rif of repetitiveness of cheking the same value twice
     curr_highest_value = degree_heuristics[0]
     if min_rem_values == []:
@@ -87,15 +86,15 @@ def degree_heuristic(prev_d_value, remaining_values, min_rem_values, \
             highest_degree_heuristic = min_rem_values[index]
     return highest_degree_heuristic
 
-
-
 def inference(num_variables, num_domain_values, variable_names, domain_values, \
     constraint_array, var, assignment):
     return None
 
-# Call the minimin_remaining_values function in order to get the remaining domain values of each variable and to get a list of
-# the variables with the minimum_remaining_values. Use these found values in the degree_heuristic call and select the variable
-# to assign next. Get the index of this variable from the variable_names list and use the index to index the list of
+# Call the minimin_remaining_values function in order to get the remaining domain
+# values of each variable and to get a list of the variables with the
+# minimum_remaining_values. Use these found values in the degree_heuristic call
+# and select the variable to assign next. Get the index of this variable from
+# the variable_names list and use the index to index the list of
 # remaining values in order to retreive the remaining values for this variable.
 def select_unassigned_variable(prev_d_value, num_variables, num_domain_values, \
     variable_names, domain_values, constraint_array, assignments):
@@ -111,7 +110,7 @@ def select_unassigned_variable(prev_d_value, num_variables, num_domain_values, \
         possible_values = None
     return (selected_variable, possible_values)
 
-#returns a solution or failure
+# returns a solution or failure
 def backtrack(prev_d_value, num_variables, num_domain_values, variable_names, \
     domain_values, constraint_array, assignments):
     assigned_variables = []
@@ -163,7 +162,6 @@ def main():
         line = line.split(' ')
         initial_state.append(line)
 
-
     # Seperate and label the number of variables (regions) and the number of domain values (colors)
     num_variables = int(initial_state[0][0])
     num_domain_values = int(initial_state[0][1])
@@ -173,8 +171,8 @@ def main():
     # Seperate the array of constraints from the rest of the the_input
     constraint_array = initial_state[3:]
 
-
-    goal_state = backtrack(None,num_variables, num_domain_values, variable_names, domain_values, constraint_array, {})
+    goal_state = backtrack(None,num_variables, num_domain_values, \
+        variable_names, domain_values, constraint_array, {})
     output(variable_names, goal_state)
 
 if __name__ == '__main__':
