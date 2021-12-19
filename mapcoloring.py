@@ -154,7 +154,7 @@ def main():
             file = open(filename, "r")
         except FileNotFoundError:
             print("File not found, try again")
-    output_filename = input("Enter output filename: ")
+    output_filename = input("Enter a name for the output file: ")
 
 
     initial_state = []
