@@ -139,9 +139,11 @@ def backtrack(prev_d_value, num_variables, num_domain_values, remaining_domains,
     return None
 
 # Print the assignements in the proper format
-def output(variable_names, assignments):
+def output(variable_names, assignments, output_filename):
+    output_file = open(output_filename, "w")
     for key in variable_names:
-        print(key + " = " + assignments[key])
+        print(key + " = " + assignments[key], file = output_file)
+    output_file.close()
 
 def main():
     # Ask for input to obtain filename and try to open the file
@@ -152,6 +154,8 @@ def main():
             file = open(filename, "r")
         except FileNotFoundError:
             print("File not found, try again")
+    output_filename = input("Enter output filename: ")
+
 
     initial_state = []
     # Make a list of the initial input from the input file
@@ -176,7 +180,8 @@ def main():
 
     goal_state = backtrack(None, num_variables, num_domain_values, remaining_domains, \
         variable_names, domain_values, constraint_array, {})
-    output(variable_names, goal_state)
+    output(variable_names, goal_state, output_filename)
+    file.close()
 
 if __name__ == '__main__':
     main()
