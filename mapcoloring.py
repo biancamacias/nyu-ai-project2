@@ -106,12 +106,12 @@ def select_unassigned_variable(prev_d_value, num_variables, num_domain_values, \
     return selected_variable
 
 # returns a solution or failure
-def backtrack(prev_d_value, num_variables, num_domain_values, remaining_domains, variable_names, \
-    domain_values, constraint_array, assignments):
+def backtrack(prev_d_value, num_variables, num_domain_values, \
+    remaining_domains, variable_names, domain_values, constraint_array, assignments):
     assigned_variables = []
     unassigned_variables = []
     succeed = True
-    #Base Case
+    # Base Case
     for name in variable_names:
         if name in assignments:
             assigned_variables.append(name)
@@ -121,16 +121,16 @@ def backtrack(prev_d_value, num_variables, num_domain_values, remaining_domains,
         return assignments
 
     variable = select_unassigned_variable(prev_d_value, \
-        num_variables, num_domain_values, remaining_domains, variable_names, domain_values, \
-        constraint_array, assignments)
+        num_variables, num_domain_values, remaining_domains, variable_names, \
+        domain_values, constraint_array, assignments)
     if (variable == None):
         return None
     index = variable_names.index(variable)
     for value in reversed(remaining_domains[index]):
     # for value in possible_values:
         assignments[variable] = value
-        remaining_domains = inference(num_variables, num_domain_values, variable_names, domain_values, \
-            constraint_array, assignments)
+        remaining_domains = inference(num_variables, num_domain_values, \
+            variable_names, domain_values, constraint_array, assignments)
         result = backtrack(value, num_variables, num_domain_values, remaining_domains, \
             variable_names, domain_values, constraint_array, assignments)
         if result != None:
