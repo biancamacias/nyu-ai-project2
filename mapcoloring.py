@@ -7,41 +7,18 @@ import copy
 # the variable_names, the domain_values, the constraint_array, and the current assignments.
 # Will return a list of the variable_names with the smallest amount of remaining values
 # gonna have remaining_values be a list of lists so it is easy to index and remove values
-def minimum_remaining_values(prev_d_value, remaining_values, num_variables, \
+def minimum_remaining_values(prev_d_value, remaining_domains, num_variables, \
     variable_names, domain_values, constraint_array, assignments):
-    # Reset Remaining Values
-    # Make a list of lists of the domain_values
-    # Have to remake this each time we calculate minimum_remaining_values in case an assignment has been removed
-    remaining_values = []
-    for num in range(num_variables):
-        curr_copy = copy.deepcopy(domain_values)
-        remaining_values.append(curr_copy)
-
     # if the assignment is empty then return all of the variable names
     if assignments == {}:
         # min_remaing_values are all of the variables if there are no assignments
-        return (remaining_values, variable_names)
-
-    # Edit the list of remaining values according to the assignments and the constraints
-    for key in assignments:
-        d_value = assignments[key]
-        row = variable_names.index(key)
-        constraint_row = constraint_array[row]
-        if key in assignments:
-            remaining_values[row] = []
-        counter = 0
-        for value in constraint_row:
-            if value == '1':
-                if d_value in remaining_values[counter]:
-                    index = remaining_values[counter].index(d_value)
-                    del remaining_values[counter][index]
-            counter += 1
+        return variable_names
 
     # Find the minimum_remaining values and store them in min_rem_values
     smallest_size = 0
-    min_rem_values =[]
+    min_rem_values = []
     index = 0
-    for var in remaining_values:
+    for var in remaining_domains:
         if var != []:
             if (smallest_size == 0) & (min_rem_values == []):
                 smallest_size = len(var)
@@ -53,9 +30,9 @@ def minimum_remaining_values(prev_d_value, remaining_values, num_variables, \
             elif len(var) == smallest_size:
                 min_rem_values.append(variable_names[index])
         index += 1
-    return (remaining_values, min_rem_values)
+    return min_rem_values
 
-def degree_heuristic(prev_d_value, remaining_values, min_rem_values, \
+def degree_heuristic(prev_d_value, min_rem_values, \
     variable_names, constraint_array, assignments):
     # Does the degree heursitic still count the adjacent regions that
     # are not being affected because another region alreay took a color choice from them?
@@ -88,8 +65,30 @@ def degree_heuristic(prev_d_value, remaining_values, min_rem_values, \
 
 # uses forward checking to remove values from unassigned variable domains
 def inference(num_variables, num_domain_values, variable_names, domain_values, \
-    constraint_array, var, assignment):
-    return None
+    constraint_array, assignments):
+    # Reset Remaining Values
+    # Make a list of lists of the domain_values
+    # Have to remake this each time we calculate minimum_remaining_values in case an assignment has been removed
+    remaining_domains = []
+    for num in range(num_variables):
+        curr_copy = copy.deepcopy(domain_values)
+        remaining_domains.append(curr_copy)
+
+    # Edit the list of remaining values according to the assignments and the constraints
+    for key in assignments:
+        d_value = assignments[key]
+        row = variable_names.index(key)
+        constraint_row = constraint_array[row]
+        if key in assignments:
+            remaining_domains[row] = []
+        counter = 0
+        for value in constraint_row:
+            if value == '1':
+                if d_value in remaining_domains[counter]:
+                    index = remaining_domains[counter].index(d_value)
+                    del remaining_domains[counter][index]
+            counter += 1
+    return remaining_domains
 
 # Call the minimin_remaining_values function in order to get the remaining domain
 # values of each variable and to get a list of the variables with the
@@ -98,21 +97,16 @@ def inference(num_variables, num_domain_values, variable_names, domain_values, \
 # the variable_names list and use the index to index the list of
 # remaining values in order to retreive the remaining values for this variable.
 def select_unassigned_variable(prev_d_value, num_variables, num_domain_values, \
-    variable_names, domain_values, constraint_array, assignments):
-    (remaining_values, min_rem_values) = minimum_remaining_values(prev_d_value, \
-     [], num_variables, variable_names, domain_values, constraint_array, assignments)
+    remaining_domains, variable_names, domain_values, constraint_array, assignments):
+    min_rem_values = minimum_remaining_values(prev_d_value, \
+     remaining_domains, num_variables, variable_names, domain_values, constraint_array, assignments)
     #print(remaining_values, min_rem_values)
-    selected_variable = degree_heuristic(prev_d_value, remaining_values, \
+    selected_variable = degree_heuristic(prev_d_value, \
         min_rem_values, variable_names, constraint_array, assignments)
-    if selected_variable != None:
-        index = variable_names.index(selected_variable)
-        possible_values = remaining_values[index]
-    else:
-        possible_values = None
-    return (selected_variable, possible_values)
+    return selected_variable
 
 # returns a solution or failure
-def backtrack(prev_d_value, num_variables, num_domain_values, variable_names, \
+def backtrack(prev_d_value, num_variables, num_domain_values, remaining_domains, variable_names, \
     domain_values, constraint_array, assignments):
     assigned_variables = []
     unassigned_variables = []
@@ -126,16 +120,18 @@ def backtrack(prev_d_value, num_variables, num_domain_values, variable_names, \
     if unassigned_variables == []:
         return assignments
 
-
-    (variable, possible_values) = select_unassigned_variable(prev_d_value, \
-        num_variables, num_domain_values, variable_names, domain_values, \
+    variable = select_unassigned_variable(prev_d_value, \
+        num_variables, num_domain_values, remaining_domains, variable_names, domain_values, \
         constraint_array, assignments)
-    if (variable == None) | (possible_values == None):
+    if (variable == None):
         return None
-    for value in reversed(possible_values):
+    index = variable_names.index(variable)
+    for value in reversed(remaining_domains[index]):
     # for value in possible_values:
         assignments[variable] = value
-        result = backtrack(value, num_variables, num_domain_values, \
+        remaining_domains = inference(num_variables, num_domain_values, variable_names, domain_values, \
+            constraint_array, assignments)
+        result = backtrack(value, num_variables, num_domain_values, remaining_domains, \
             variable_names, domain_values, constraint_array, assignments)
         if result != None:
             return assignments
@@ -145,7 +141,7 @@ def backtrack(prev_d_value, num_variables, num_domain_values, variable_names, \
 # Print the assignements in the proper format
 def output(variable_names, assignments):
     for key in variable_names:
-        print(key + "=" + assignments[key])
+        print(key + " = " + assignments[key])
 
 def main():
     # Ask for input to obtain filename and try to open the file
@@ -173,7 +169,12 @@ def main():
     # Seperate the array of constraints from the rest of the the_input
     constraint_array = initial_state[3:]
 
-    goal_state = backtrack(None,num_variables, num_domain_values, \
+    remaining_domains = []
+    for num in range(num_variables):
+        curr_copy = copy.deepcopy(domain_values)
+        remaining_domains.append(curr_copy)
+
+    goal_state = backtrack(None, num_variables, num_domain_values, remaining_domains, \
         variable_names, domain_values, constraint_array, {})
     output(variable_names, goal_state)
 
