@@ -74,18 +74,19 @@ def degree_heuristic(prev_d_value, remaining_values, min_rem_values, \
                 curr_degree_heursitic += 1
         degree_heuristics.append(curr_degree_heursitic)
 
-    # should fix if works to get rif of repetitiveness of cheking the same value twice
+    # should fix if works to get rid of repetitiveness of checking the same value twice
     curr_highest_value = degree_heuristics[0]
     if min_rem_values == []:
         return None
     highest_degree_heuristic = min_rem_values[0]
     for value in degree_heuristics[1:]:
-        if value < curr_highest_value:
+        if value >= curr_highest_value:
             curr_highest_value = value
             index = degree_heuristics.index(value)
             highest_degree_heuristic = min_rem_values[index]
     return highest_degree_heuristic
 
+# uses forward checking to remove values from unassigned variable domains
 def inference(num_variables, num_domain_values, variable_names, domain_values, \
     constraint_array, var, assignment):
     return None
@@ -131,7 +132,8 @@ def backtrack(prev_d_value, num_variables, num_domain_values, variable_names, \
         constraint_array, assignments)
     if (variable == None) | (possible_values == None):
         return None
-    for value in possible_values:
+    for value in reversed(possible_values):
+    # for value in possible_values:
         assignments[variable] = value
         result = backtrack(value, num_variables, num_domain_values, \
             variable_names, domain_values, constraint_array, assignments)
